@@ -1,0 +1,135 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2020 Andres Almiray.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+plugins {
+    id 'java-library'
+    id 'groovy'
+    id 'org.kordamp.gradle.groovy-project'
+    id 'org.kordamp.gradle.plugin'
+}
+
+if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = '**undefined**'
+if (!project.hasProperty('bintrayApiKey'))   ext.bintrayApiKey   = '**undefined**'
+
+config {
+    release = (rootProject.findProperty('release') ?: false).toBoolean()
+
+    info {
+        name          = 'Kordamp parent build'
+        description   = 'Parent build for Kordamp projects'
+        vendor        = 'Kordamp'
+        inceptionYear = '2020'
+        tags          = ['kordamp', 'build']
+
+        links {
+            website      = 'https://github.com/kordamp/kordamp-parentbuild'
+            issueTracker = 'https://github.com/kordamp/kordamp-parentbuild/issues'
+            scm          = 'https://github.com/kordamp/kordamp-parentbuild.git'
+        }
+
+        specification  { enabled = false }
+
+        implementation { enabled = false }
+
+        people {
+            person {
+                id    = 'aalmiray'
+                name  = 'Andres Almiray'
+                url   = 'http://andresalmiray.com/'
+                roles = ['developer']
+                properties = [
+                    twitter: 'aalmiray',
+                    github : 'aalmiray'
+                ]
+            }
+        }
+
+        repositories {
+            repository {
+                name = 'localRelease'
+                url  = "${project.rootProject.buildDir}/repos/local/release"
+            }
+            repository {
+                name = 'localSnapshot'
+                url  = "${project.rootProject.buildDir}/repos/local/snapshot"
+            }
+        }
+    }
+
+    docs {
+        groovydoc {
+            replaceJavadoc = true
+            options {
+                link 'https://docs.gradle.org/5.0/javadoc/', 'org.gradle.'
+            }
+        }
+    }
+
+    licensing {
+        licenses {
+            license {
+                id = 'Apache-2.0'
+            }
+        }
+    }
+
+    bintray {
+        enabled      = true
+        userOrg      = 'kordamp'
+        repo         = 'maven'
+        name         = rootProject.name
+        publish      = config.release
+        credentials {
+            username = project.bintrayUsername
+            password = project.bintrayApiKey
+        }
+    }
+
+    publishing {
+        signing             = false
+        releasesRepository  = 'localRelease'
+        snapshotsRepository = 'localSnapshot'
+    }
+
+    plugin {
+        enabled             = true
+        id                  = 'org.kordamp.gradle.kordamp-parentbuild'
+        implementationClass = 'org.kordamp.gradle.KordampParentBuildPlugin'
+    }
+}
+
+normalization {
+    runtimeClasspath {
+        ignore('/META-INF/MANIFEST.MF')
+    }
+}
+
+repositories {
+    jcenter()
+    gradlePluginPortal()
+    mavenLocal()
+}
+
+dependencies {
+    compileOnly gradleApi()
+
+    api "org.kordamp.gradle:kordamp-parentpom:$kordampPomVersion"
+    api "org.kordamp.gradle:settings-gradle-plugin:$kordampPluginVersion"
+    api "org.kordamp.gradle:enforcer-api:$enforcerPluginVersion"
+    api "org.kordamp.gradle:enforcer-rules:$enforcerPluginVersion"
+    api "org.kordamp.gradle:enforcer-gradle-plugin:$enforcerPluginVersion"
+}
