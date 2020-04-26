@@ -1,4 +1,4 @@
-= kordamp-parentpom
+= kordamp-parentbuild
 :linkattrs:
 :project-owner:   kordamp
 :project-repo:    maven
