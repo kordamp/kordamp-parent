@@ -131,6 +131,8 @@ dependencies {
 
     api "org.kordamp.gradle:kordamp-parentpom:$kordampPomVersion"
     api "org.kordamp.gradle:settings-gradle-plugin:$kordampPluginVersion"
+    api "org.kordamp.gradle:inline-gradle-plugin:$kordampPluginVersion"
+    api "org.kordamp.gradle:insight-gradle-plugin:$kordampPluginVersion"
     api "org.kordamp.gradle:enforcer-api:$enforcerPluginVersion"
     api "org.kordamp.gradle:enforcer-rules:$enforcerPluginVersion"
     api "org.kordamp.gradle:enforcer-gradle-plugin:$enforcerPluginVersion"
