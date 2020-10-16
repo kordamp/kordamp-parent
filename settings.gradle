@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2020 Andres Almiray.
+ * Copyright 2018-2020 Andres Almiray.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-pluginManagement {
+buildscript {
     repositories {
-        jcenter()
         gradlePluginPortal()
+        jcenter()
         mavenLocal()
     }
-    plugins {
-        id 'org.kordamp.gradle.groovy-project' version kordampPluginVersion
-        id 'org.kordamp.gradle.plugin'         version kordampPluginVersion
+    dependencies {
+        classpath "org.kordamp.gradle:groovy-project-gradle-plugin:$kordampPluginVersion"
+        classpath "org.kordamp.gradle:plugin-gradle-plugin:$kordampPluginVersion"
+        classpath "org.kordamp.gradle:settings-gradle-plugin:$kordampPluginVersion"
+        classpath "org.kordamp.gradle:inline-gradle-plugin:$kordampPluginVersion"
+        classpath "org.kordamp.gradle:insight-gradle-plugin:$kordampPluginVersion"
     }
 }
 
-rootProject.name = 'kordamp-parentbuild'
+apply plugin: 'org.kordamp.gradle.settings'
+apply plugin: 'org.kordamp.gradle.insight'
+apply plugin: 'org.kordamp.gradle.inline'
+
+rootProject.name = 'kordamp-parent'
+
+projects {
+    directories = ['plugins']
+
+    plugins {
+        all {
+            id 'idea'
+        }
+        path(':') {
+            id 'org.kordamp.gradle.groovy-project'
+            id 'org.kordamp.gradle.bintray'
+        }
+        dir('plugins') {
+            id 'java-library'
+            id 'groovy'
+            id 'org.kordamp.gradle.plugin'
+        }
+    }
+}

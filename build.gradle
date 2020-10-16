@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2020 Andres Almiray.
+ * Copyright 2018-2020 Andres Almiray.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id 'java-library'
-    id 'groovy'
-    id 'org.kordamp.gradle.groovy-project'
-    id 'org.kordamp.gradle.plugin'
-}
 
 if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = '**undefined**'
 if (!project.hasProperty('bintrayApiKey'))   ext.bintrayApiKey   = '**undefined**'
@@ -29,16 +23,22 @@ config {
     release = (rootProject.findProperty('release') ?: false).toBoolean()
 
     info {
-        name          = 'Kordamp parent build'
-        description   = 'Parent build for Kordamp projects'
+        name          = 'Kordamp parent'
+        description   = 'Parent for Kordamp projects'
         vendor        = 'Kordamp'
-        inceptionYear = '2020'
-        tags          = ['kordamp', 'build']
+        inceptionYear = '2018'
+        tags          = ['kordamp', 'pom', 'build']
 
         links {
-            website      = 'https://github.com/kordamp/kordamp-parentbuild'
-            issueTracker = 'https://github.com/kordamp/kordamp-parentbuild/issues'
-            scm          = 'https://github.com/kordamp/kordamp-parentbuild.git'
+            website      = "https://github.com/kordamp/${project.rootProject.name}"
+            issueTracker = "https://github.com/kordamp/${project.rootProject.name}/issues"
+            scm          = "https://github.com/kordamp/${project.rootProject.name}.git"
+        }
+
+        scm {
+            url                 = "https://github.com/kordamp/${project.rootProject.name}"
+            connection          = "scm:git:https://github.com/kordamp/${project.rootProject.name}.git"
+            developerConnection = "scm:git:git@github.com:kordamp/${project.rootProject.name}.git"
         }
 
         specification  { enabled = false }
@@ -71,6 +71,10 @@ config {
     }
 
     docs {
+        javadoc {
+            enabled = false
+        }
+
         groovydoc {
             replaceJavadoc = true
             options {
@@ -88,7 +92,7 @@ config {
     }
 
     bintray {
-        enabled      = true
+        enabled      = false
         userOrg      = 'kordamp'
         repo         = 'maven'
         name         = rootProject.name
@@ -104,36 +108,40 @@ config {
         releasesRepository  = 'localRelease'
         snapshotsRepository = 'localSnapshot'
     }
+}
 
-    plugins {
-        plugin {
-            name                = 'parentbuild'
-            id                  = 'org.kordamp.gradle.kordamp-parentbuild'
-            implementationClass = 'org.kordamp.gradle.KordampParentBuildPlugin'
+allprojects {
+    repositories {
+        jcenter()
+        gradlePluginPortal()
+        mavenLocal()
+    }
+}
+
+projects.subprojects {
+    dir('plugins') {
+        config {
+            info {
+                description = project_description
+            }
+
+            plugins {
+                plugin {
+                    name                = project.name
+                    id                  = project.pluginId
+                    implementationClass = project.pluginImplementationClass
+                }
+            }
+        }
+
+        dependencies {
+            compileOnly gradleApi()
+        }
+
+        normalization {
+            runtimeClasspath {
+                ignore('/META-INF/MANIFEST.MF')
+            }
         }
     }
-}
-
-normalization {
-    runtimeClasspath {
-        ignore('/META-INF/MANIFEST.MF')
-    }
-}
-
-repositories {
-    jcenter()
-    gradlePluginPortal()
-    mavenLocal()
-}
-
-dependencies {
-    compileOnly gradleApi()
-
-    api "org.kordamp.gradle:kordamp-parentpom:$kordampPomVersion"
-    api "org.kordamp.gradle:settings-gradle-plugin:$kordampPluginVersion"
-    api "org.kordamp.gradle:inline-gradle-plugin:$kordampPluginVersion"
-    api "org.kordamp.gradle:insight-gradle-plugin:$kordampPluginVersion"
-    api "org.kordamp.gradle:enforcer-api:$enforcerPluginVersion"
-    api "org.kordamp.gradle:enforcer-rules:$enforcerPluginVersion"
-    api "org.kordamp.gradle:enforcer-gradle-plugin:$enforcerPluginVersion"
 }
