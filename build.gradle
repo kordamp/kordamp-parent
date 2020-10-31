@@ -92,11 +92,12 @@ config {
     }
 
     bintray {
-        enabled      = false
-        userOrg      = 'kordamp'
-        repo         = 'maven'
-        name         = rootProject.name
-        publish      = config.release
+        enabled       = true
+        userOrg       = 'kordamp'
+        repo          = 'maven'
+        name          = rootProject.name
+        publish       = config.release
+        skipMavenSync = true
         credentials {
             username = project.bintrayUsername
             password = project.bintrayApiKey
