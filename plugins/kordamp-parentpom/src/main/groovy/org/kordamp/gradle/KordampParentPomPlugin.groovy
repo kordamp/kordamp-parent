@@ -60,7 +60,7 @@ class KordampParentPomPlugin implements Plugin<Project> {
                     person {
                         id    = 'aalmiray'
                         name  = 'Andres Almiray'
-                        url   = 'http://andresalmiray.com/'
+                        url   = 'https://andresalmiray.com/'
                         roles = ['developer']
                         properties = [
                             twitter: 'aalmiray',
