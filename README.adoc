@@ -4,7 +4,7 @@
 :project-repo:    maven
 :project-name:    kordamp-parent
 :project-group:   org.kordamp.gradle
-:project-version: 2.2.0
+:project-version: 2.3.0
 
 image:https://github.com/{project-owner}/{project-name}/workflows/Build/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
 image:https://api.bintray.com/packages/{project-owner}/{project-repo}/{project-name}/images/download.svg[link="https://bintray.com/{project-owner}/{project-repo}/{project-name}/_latestVersion"]
