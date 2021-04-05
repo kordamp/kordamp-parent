@@ -18,7 +18,7 @@
 buildscript {
     repositories {
         gradlePluginPortal()
-        jcenter()
+        mavenCentral()
         mavenLocal()
     }
     dependencies {
@@ -45,7 +45,6 @@ projects {
         }
         path(':') {
             id 'org.kordamp.gradle.groovy-project'
-            id 'org.kordamp.gradle.bintray'
         }
         dir('plugins') {
             id 'java-library'

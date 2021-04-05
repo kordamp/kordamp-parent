@@ -22,7 +22,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.kordamp.gradle.plugin.base.ProjectConfigurationExtension
-import org.kordamp.gradle.plugin.bintray.BintrayPlugin
+import org.kordamp.gradle.plugin.profiles.ProfilesExtension
 import org.kordamp.gradle.plugin.project.java.JavaProjectPlugin
 
 /**
@@ -31,10 +31,7 @@ import org.kordamp.gradle.plugin.project.java.JavaProjectPlugin
 class KordampParentPomPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.plugins.apply(JavaProjectPlugin)
-        project.plugins.apply(BintrayPlugin)
 
-        if (!project.hasProperty('bintrayUsername'))  project.ext.bintrayUsername  = '**undefined**'
-        if (!project.hasProperty('bintrayApiKey'))    project.ext.bintrayApiKey    = '**undefined**'
         if (!project.hasProperty('sonatypeUsername')) project.ext.sonatypeUsername = '**undefined**'
         if (!project.hasProperty('sonatypePassword')) project.ext.sonatypePassword = '**undefined**'
 
@@ -105,27 +102,75 @@ class KordampParentPomPlugin implements Plugin<Project> {
                 }
             }
 
-            bintray {
-                enabled = true
-                credentials {
-                    username = project.bintrayUsername
-                    password = project.bintrayApiKey
-                }
-                userOrg = 'kordamp'
-                repo    = 'maven'
-                name    = project.rootProject.name
-                publish = (project.rootProject.findProperty('release') ?: false).toBoolean()
-            }
-
             publishing {
                 releasesRepository  = 'localRelease'
                 snapshotsRepository = 'localSnapshot'
             }
         }
 
+        project.extensions.findByType(ProfilesExtension).with {
+            profile('release') {
+                activation {
+                    property {
+                        key = 'full-release'
+                    }
+                }
+                action {
+                    config {
+                        release = true
+                    }
+                }
+            }
+
+            profile('sign') {
+                activation {
+                    property {
+                        key = 'full-release'
+                    }
+                }
+                action {
+                    println 'Artifact signing is turned ON'
+
+                    config {
+                        publishing {
+                            signing {
+                                enabled = true
+                                keyId = System.getenv()['GPG_KEY_ID']
+                                secretKey = System.getenv()['GPG_SECRET_KEY']
+                                password = System.getenv()['GPG_PASSPHRASE']
+                            }
+                        }
+                    }
+                }
+            }
+
+            profile('stage') {
+                activation {
+                    property {
+                        key = 'full-release'
+                    }
+                }
+                action {
+                    println 'Staging to Sonatype is turned ON'
+
+                    apply plugin: 'io.github.gradle-nexus.publish-plugin'
+
+                    nexusPublishing {
+                        repositories {
+                            sonatype {
+                                username = project.ext.sonatypeUsername
+                                password = project.ext.sonatypePassword
+                                nexusUrl = uri('https://s01.oss.sonatype.org/service/local/')
+                                snapshotRepositoryUrl = uri('https://s01.oss.sonatype.org/content/repositories/snapshots/')
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         project.allprojects {
             repositories {
-                jcenter()
                 mavenCentral()
             }
 
