@@ -73,7 +73,7 @@ class KordampParentBuildPlugin implements Plugin<Settings> {
             void projectsLoaded(Gradle gradle) {
                 File versionFile = new File(gradle.rootProject.rootDir, 'VERSION')
                 if (versionFile.exists()) {
-                    String version = versionFile.text
+                    String version = versionFile.text.trim()
                     gradle.rootProject.version = version
                     gradle.rootProject.childProjects.values().each { p -> p.version = version }
                 }
