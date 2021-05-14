@@ -1,0 +1,48 @@
+project:
+  name: kordamp-parent
+  description: Parent for Kordamp projects
+  longDescription: Parent for Kordamp projects
+  website: https://kordamp.org/kordamp-parent
+  authors:
+    - Andres Almiray
+  license: Apache-2.0
+
+release:
+  github:
+    branch: master
+    username: aalmiray
+    overwrite: true
+    changelog:
+      sort: DESC
+      formatted: ALWAYS
+      change: '- {{commitShortHash}} {{commitTitle}}'
+      labelers:
+        - label: 'feature'
+          title: 'Resolves #'
+          body: 'Resolves #'
+        - label: 'issue'
+          title: 'Fixes #'
+          body: 'Fixes #'
+        - label: 'issue'
+          title: 'Relates to #'
+          body: 'Relates to #'
+        - label: 'task'
+          title: '[chore]'
+      categories:
+        - title: '🚀 Features'
+          labels:
+            - 'feature'
+        - title: '✅ Issues'
+          labels:
+            - 'issue'
+        - title: '🧰 Tasks'
+          labels:
+            - 'task'
+      replacers:
+        - search: '\[chore\] '
+          replace: ''
+
+announce:
+  twitter:
+    active: release
+    status: 🚀 {{projectName}} {{projectVersion}} has been released! {{releaseNotesUrl}}

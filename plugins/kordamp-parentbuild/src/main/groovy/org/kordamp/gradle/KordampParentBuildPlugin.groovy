@@ -71,6 +71,13 @@ class KordampParentBuildPlugin implements Plugin<Settings> {
         settings.gradle.addBuildListener(new BuildAdapter() {
             @Override
             void projectsLoaded(Gradle gradle) {
+                File versionFile = new File(gradle.rootProject.rootDir, 'VERSION')
+                if (versionFile.exists()) {
+                    String version = versionFile.text
+                    gradle.rootProject.version = version
+                    gradle.rootProject.childProjects.values().each { p -> p.version = version }
+                }
+
                 gradle.rootProject.pluginManager.apply(KordampParentPomPlugin)
             }
         })
