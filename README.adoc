@@ -4,10 +4,10 @@
 :project-repo:    maven
 :project-name:    kordamp-parent
 :project-group:   org.kordamp.gradle
-:project-version: 2.3.0
+:plugin-id:       {project-group}.kordamp-parentbuild
 
 image:https://github.com/{project-owner}/{project-name}/workflows/Build/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
-image:https://api.bintray.com/packages/{project-owner}/{project-repo}/{project-name}/images/download.svg[link="https://bintray.com/{project-owner}/{project-repo}/{project-name}/_latestVersion"]
+image:https://img.shields.io/maven-metadata/v?label=Plugin%20Portal&metadataUrl=https://plugins.gradle.org/m2/org/kordamp/gradle/kordamp-parentbuild/{plugin-id}.gradle.plugin/maven-metadata.xml["Gradle Plugin Portal, link="https://plugins.gradle.org/plugin/{plugin-id}"]
 
 ---
 
@@ -15,4 +15,4 @@ Defines common build settings for all Kordamp related projects.
 
 The `org.kordamp.gradle.kordamp-parentpom` plugin defines settings at the root project, as if it were a Maven parent POM.
 
-The `org.kordamp.gradle.kordamp-parentbuild` plugin defines settings at the build, as it it were the Maven Super POM.
+The `org.kordamp.gradle.kordamp-parentbuild` plugin defines settings at the build, as if it were the Maven Super POM.
