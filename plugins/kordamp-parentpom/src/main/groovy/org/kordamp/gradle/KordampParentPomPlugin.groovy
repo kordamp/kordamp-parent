@@ -32,6 +32,8 @@ class KordampParentPomPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.plugins.apply(JavaProjectPlugin)
 
+        if (!project.hasProperty('sonatypeReleaseRepositoryUrl')) project.ext.sonatypeReleaseRepositoryUrl = 'https://s01.oss.sonatype.org/service/local/'
+        if (!project.hasProperty('sonatypeSnapshotRepositoryUrl')) project.ext.sonatypeSnapshotRepositoryUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
         if (!project.hasProperty('sonatypeUsername')) project.ext.sonatypeUsername = '**undefined**'
         if (!project.hasProperty('sonatypePassword')) project.ext.sonatypePassword = '**undefined**'
 
@@ -160,8 +162,8 @@ class KordampParentPomPlugin implements Plugin<Project> {
                             sonatype {
                                 username = project.ext.sonatypeUsername
                                 password = project.ext.sonatypePassword
-                                nexusUrl = uri('https://s01.oss.sonatype.org/service/local/')
-                                snapshotRepositoryUrl = uri('https://s01.oss.sonatype.org/content/repositories/snapshots/')
+                                nexusUrl = uri(project.ext.sonatypeReleaseRepositoryUrl)
+                                snapshotRepositoryUrl = uri(project.ext.sonatypeSnapshotRepositoryUrl)
                             }
                         }
                     }
