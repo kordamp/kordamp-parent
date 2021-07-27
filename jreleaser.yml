@@ -18,9 +18,15 @@ release:
       contributors:
         format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
       hide:
+        categories:
+          - 'Merge'
         contributors:
           - 'GitHub'
       labelers:
+        - label: 'merge_pull'
+          title: 'Merge pull'
+        - label: 'merge_branch'
+          title: 'Merge branch'
         - label: 'feature'
           title: 'Resolves #'
           body: 'Resolves #'
@@ -33,6 +39,10 @@ release:
         - label: 'task'
           title: '[chore]'
       categories:
+        - title: 'Merge'
+          labels:
+            - 'merge_pull'
+            - 'merge_branch'
         - title: '🚀 Features'
           labels:
             - 'feature'
