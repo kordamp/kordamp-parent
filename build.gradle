@@ -95,7 +95,6 @@ config {
     }
 
     publishing {
-        signing             = false
         releasesRepository  = 'localRelease'
         snapshotsRepository = 'localSnapshot'
     }
@@ -109,7 +108,7 @@ allprojects {
     }
 }
 
-projects.subprojects {
+gradleProjects.subprojects {
     dir('plugins') {
         config {
             info {
