@@ -101,13 +101,13 @@ config {
 
 allprojects {
     repositories {
-        gradlePluginPortal()
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
 
-projects.subprojects {
+gradleProjects.subprojects {
     dir('plugins') {
         config {
             info {
