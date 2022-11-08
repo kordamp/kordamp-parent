@@ -1,59 +1,40 @@
 project:
   name: kordamp-parent
   description: Parent for Kordamp projects
-  longDescription: Parent for Kordamp projects
-  website: https://kordamp.org/kordamp-parent
+  links:
+    homepage: https://kordamp.org/kordamp-parent
   authors:
     - Andres Almiray
   license: Apache-2.0
+  inceptionYear: 2018
 
 release:
   github:
     branch: master
     overwrite: true
     changelog:
-      sort: DESC
       formatted: ALWAYS
+      preset: conventional-commits
       format: '- {{commitShortHash}} {{commitTitle}}'
       contributors:
         format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+      labelers:
+        - label: 'dependencies'
+          title: 'regex:^(?:deps(?:\(.*\))?!?):\s.*'
+          order: 120
+      categories:
+        - title: '⚙️  Dependencies'
+          key: 'dependencies'
+          order: 80
+          labels:
+            - 'dependencies'
       hide:
         categories:
-          - 'Merge'
+          - 'merge'
         contributors:
           - 'GitHub'
-      labelers:
-        - label: 'merge_pull'
-          title: 'Merge pull'
-        - label: 'merge_branch'
-          title: 'Merge branch'
-        - label: 'feature'
-          title: 'Resolves #'
-          body: 'Resolves #'
-        - label: 'issue'
-          title: 'Fixes #'
-          body: 'Fixes #'
-        - label: 'issue'
-          title: 'Relates to #'
-          body: 'Relates to #'
-        - label: 'task'
-          title: '[chore]'
-      categories:
-        - title: 'Merge'
-          labels:
-            - 'merge_pull'
-            - 'merge_branch'
-        - title: '🚀 Features'
-          labels:
-            - 'feature'
-        - title: '✅ Issues'
-          labels:
-            - 'issue'
-        - title: '🧰 Tasks'
-          labels:
-            - 'task'
       replacers:
-        - search: '\[chore\] '
+        - search: 'deps: '
 
 announce:
   twitter:
