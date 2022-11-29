@@ -19,10 +19,10 @@ package org.kordamp.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.kordamp.gradle.plugin.base.ProjectConfigurationExtension
-import org.kordamp.gradle.plugin.profiles.ProfilesExtension
 import org.kordamp.gradle.plugin.project.java.JavaProjectPlugin
 
 /**
@@ -32,13 +32,13 @@ class KordampParentPomPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.plugins.apply(JavaProjectPlugin)
 
-        if (!project.hasProperty('sonatypeReleaseRepositoryUrl')) project.ext.sonatypeReleaseRepositoryUrl = 'https://s01.oss.sonatype.org/service/local/'
-        if (!project.hasProperty('sonatypeSnapshotRepositoryUrl')) project.ext.sonatypeSnapshotRepositoryUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
         if (!project.hasProperty('sonatypeUsername')) project.ext.sonatypeUsername = '**undefined**'
         if (!project.hasProperty('sonatypePassword')) project.ext.sonatypePassword = '**undefined**'
+        if (!project.hasProperty('reproducibleBuild')) project.ext.reproducible = 'false'
 
+        boolean reproducibleBuild = (project.rootProject.findProperty('reproducibleBuild') ?: false).toBoolean()
         project.extensions.findByType(ProjectConfigurationExtension).with {
-            release = (project.rootProject.findProperty('release') ?: false).toBoolean()
+            release = true
 
             info {
                 vendor = 'Kordamp'
@@ -87,6 +87,13 @@ class KordampParentPomPlugin implements Plugin<Project> {
                 }
             }
 
+            buildInfo {
+                useCommitTimestamp = reproducibleBuild
+                skipBuildBy        = reproducibleBuild
+                skipBuildJdk       = reproducibleBuild
+                skipBuildOs        = reproducibleBuild
+            }
+
             licensing {
                 licenses {
                     license {
@@ -107,67 +114,6 @@ class KordampParentPomPlugin implements Plugin<Project> {
             publishing {
                 releasesRepository  = 'localRelease'
                 snapshotsRepository = 'localSnapshot'
-            }
-        }
-
-        project.extensions.findByType(ProfilesExtension).with {
-            profile('release') {
-                activation {
-                    property {
-                        key = 'full-release'
-                    }
-                }
-                action {
-                    config {
-                        release = true
-                    }
-                }
-            }
-
-            profile('sign') {
-                activation {
-                    property {
-                        key = 'full-release'
-                    }
-                }
-                action {
-                    println 'Artifact signing is turned ON'
-
-                    config {
-                        publishing {
-                            signing {
-                                enabled = true
-                                keyId = System.getenv()['GPG_KEY_ID']
-                                secretKey = System.getenv()['GPG_SECRET_KEY']
-                                password = System.getenv()['GPG_PASSPHRASE']
-                            }
-                        }
-                    }
-                }
-            }
-
-            profile('stage') {
-                activation {
-                    property {
-                        key = 'full-release'
-                    }
-                }
-                action {
-                    println 'Staging to Sonatype is turned ON'
-
-                    apply plugin: 'io.github.gradle-nexus.publish-plugin'
-
-                    nexusPublishing {
-                        repositories {
-                            sonatype {
-                                username = project.ext.sonatypeUsername
-                                password = project.ext.sonatypePassword
-                                nexusUrl = uri(project.ext.sonatypeReleaseRepositoryUrl)
-                                snapshotRepositoryUrl = uri(project.ext.sonatypeSnapshotRepositoryUrl)
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -207,6 +153,13 @@ class KordampParentPomPlugin implements Plugin<Project> {
             p.tasks.withType(GroovyCompile) { GroovyCompile c ->
                 if (scompat) c.sourceCompatibility = scompat
                 if (tcompat) c.targetCompatibility = tcompat
+            }
+
+            if (reproducibleBuild) {
+                p.tasks.withType(AbstractArchiveTask).configureEach {
+                    preserveFileTimestamps = false
+                    reproducibleFileOrder = true
+                }
             }
         }
     }

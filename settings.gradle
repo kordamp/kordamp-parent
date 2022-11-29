@@ -27,14 +27,25 @@ buildscript {
         classpath "org.kordamp.gradle:settings-gradle-plugin:$kordampPluginVersion"
         classpath "org.kordamp.gradle:inline-gradle-plugin:$kordampPluginVersion"
         classpath "org.kordamp.gradle:insight-gradle-plugin:$kordampPluginVersion"
+        classpath "org.kordamp.gradle:enforcer-gradle-plugin:$enforcerPluginVersion"
     }
 }
 
 apply plugin: 'org.kordamp.gradle.settings'
 apply plugin: 'org.kordamp.gradle.insight'
 apply plugin: 'org.kordamp.gradle.inline'
+apply plugin: 'org.kordamp.gradle.enforcer'
 
 rootProject.name = 'kordamp-parent'
+
+enforce {
+    rule(enforcer.rules.EnforceBytecodeVersion) { r ->
+        r.maxJdkVersion.set(settings.ext.sourceCompatibility)
+    }
+    rule(enforcer.rules.RequireJavaVersion) { r ->
+        r.version.set(settings.ext.sourceCompatibility)
+    }
+}
 
 projects {
     directories = ['plugins']

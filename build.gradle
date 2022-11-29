@@ -21,8 +21,11 @@ allprojects { p ->
     p.version = p.rootProject.ext.theVersion
 }
 
+if (!project.hasProperty('reproducibleBuild')) project.ext.reproducible = 'false'
+boolean reproducibleBuild = (project.rootProject.findProperty('reproducibleBuild') ?: false).toBoolean()
+
 config {
-    release = (rootProject.findProperty('release') ?: false).toBoolean()
+    release = true
 
     info {
         name          = 'Kordamp parent'
@@ -85,6 +88,13 @@ config {
         }
     }
 
+    buildInfo {
+        useCommitTimestamp = reproducibleBuild
+        skipBuildBy        = reproducibleBuild
+        skipBuildJdk       = reproducibleBuild
+        skipBuildOs        = reproducibleBuild
+    }
+
     licensing {
         licenses {
             license {
@@ -107,7 +117,7 @@ allprojects {
     }
 }
 
-gradleProjects.subprojects {
+projects.subprojects {
     dir('plugins') {
         config {
             info {
@@ -130,6 +140,25 @@ gradleProjects.subprojects {
         normalization {
             runtimeClasspath {
                 ignore('/META-INF/MANIFEST.MF')
+            }
+        }
+
+        def scompat = project.findProperty('sourceCompatibility')
+        def tcompat = project.findProperty('targetCompatibility')
+
+        tasks.withType(JavaCompile) { JavaCompile c ->
+            if (scompat) c.sourceCompatibility = scompat
+            if (tcompat) c.targetCompatibility = tcompat
+        }
+        tasks.withType(GroovyCompile) { GroovyCompile c ->
+            if (scompat) c.sourceCompatibility = scompat
+            if (tcompat) c.targetCompatibility = tcompat
+        }
+
+        if (reproducibleBuild) {
+            tasks.withType(AbstractArchiveTask).configureEach {
+                preserveFileTimestamps = false
+                reproducibleFileOrder = true
             }
         }
     }
