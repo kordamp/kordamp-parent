@@ -12,6 +12,8 @@ release:
   github:
     branch: master
     overwrite: true
+    issues:
+      enabled: true
     changelog:
       formatted: ALWAYS
       preset: conventional-commits
