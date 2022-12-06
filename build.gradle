@@ -33,6 +33,7 @@ config {
         vendor        = 'Kordamp'
         inceptionYear = '2018'
         tags          = ['kordamp', 'pom', 'build']
+        bytecodeVersion = 8
 
         links {
             website      = "https://github.com/kordamp/${project.rootProject.name}"
