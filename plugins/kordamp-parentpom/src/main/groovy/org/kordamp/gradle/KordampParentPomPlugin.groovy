@@ -37,11 +37,17 @@ class KordampParentPomPlugin implements Plugin<Project> {
         if (!project.hasProperty('reproducibleBuild')) project.ext.reproducible = 'false'
 
         boolean reproducibleBuild = (project.rootProject.findProperty('reproducibleBuild') ?: false).toBoolean()
+        def rscompat = project.rootProject.findProperty('sourceCompatibility')
+        def rtcompat = project.rootProject.findProperty('targetCompatibility')
+        String jv = String.valueOf(rtcompat ?: rscompat)
+        if (jv.startsWith('1.')) jv = jv[2..-1]
+
         project.extensions.findByType(ProjectConfigurationExtension).with {
             release = true
 
             info {
                 vendor = 'Kordamp'
+                bytecodeVersion = jv
 
                 links {
                     website      = "https://github.com/kordamp/${project.rootProject.name}"
