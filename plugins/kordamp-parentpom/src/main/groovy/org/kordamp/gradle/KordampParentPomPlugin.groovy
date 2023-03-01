@@ -131,14 +131,16 @@ class KordampParentPomPlugin implements Plugin<Project> {
                 }
             }
 
-            dependencyUpdates.resolutionStrategy {
-                componentSelection { rules ->
-                    rules.all { selection ->
-                        boolean rejected = ['alpha', 'beta', 'rc', 'cr'].any { qualifier ->
-                            selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*.*/
-                        }
-                        if (rejected) {
-                            selection.reject('Release candidate')
+            tasks.named('dependencyUpdates').configure {
+                resolutionStrategy {
+                    componentSelection { rules ->
+                        rules.all { selection ->
+                            boolean rejected = ['alpha', 'beta', 'rc', 'cr'].any { qualifier ->
+                                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*.*/
+                            }
+                            if (rejected) {
+                                selection.reject('Release candidate')
+                            }
                         }
                     }
                 }
