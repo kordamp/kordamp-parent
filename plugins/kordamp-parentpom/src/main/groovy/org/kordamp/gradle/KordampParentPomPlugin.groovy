@@ -112,9 +112,6 @@ class KordampParentPomPlugin implements Plugin<Project> {
                 javadoc {
                     excludes = ['**/*.html', 'META-INF/**']
                 }
-                sourceXref {
-                    inputEncoding = 'UTF-8'
-                }
             }
 
             publishing {
