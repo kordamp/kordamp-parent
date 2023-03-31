@@ -64,7 +64,7 @@ class KordampParentBuildPlugin implements Plugin<Settings> {
             }
             rule(DependencyConvergence)
             rule(BanDuplicateClasses) { r ->
-                r.ignoreWhenIdentical = true
+                r.ignoreWhenIdentical.set(true)
             }
         }
 
