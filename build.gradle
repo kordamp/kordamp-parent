@@ -118,7 +118,7 @@ allprojects {
     }
 }
 
-projects.subprojects {
+gradleProjects.subprojects {
     dir('plugins') {
         config {
             info {
