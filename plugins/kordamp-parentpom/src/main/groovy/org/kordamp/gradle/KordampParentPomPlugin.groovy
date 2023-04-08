@@ -161,9 +161,11 @@ class KordampParentPomPlugin implements Plugin<Project> {
             }
 
             if (reproducibleBuild) {
-                p.tasks.withType(AbstractArchiveTask).configureEach {
-                    preserveFileTimestamps = false
-                    reproducibleFileOrder = true
+                p.tasks.withType(AbstractArchiveTask) { AbstractArchiveTask archive ->
+                    archive.preserveFileTimestamps = false
+                    archive.reproducibleFileOrder  = true
+                    archive.dirMode  = 0755
+                    archive.fileMode = 0644
                 }
             }
         }
