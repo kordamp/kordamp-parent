@@ -6,13 +6,17 @@ on:
       version:
         description: 'Release version'
         required: true
+      branch:
+        description: 'Branch'
+        default: 'master'
+        required: true
 
 jobs:
   release:
     name: Release
     uses: kordamp/kordamp-gradle-plugin-workflow/.github/workflows/release.yml@main
     with:
-      branch: master
+      branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       java-version: ${{ vars.JAVA_VERSION }}
     secrets:
