@@ -10,7 +10,7 @@ project:
 
 release:
   github:
-    branch: master
+    branch: gradle6
     overwrite: true
     issues:
       enabled: true
