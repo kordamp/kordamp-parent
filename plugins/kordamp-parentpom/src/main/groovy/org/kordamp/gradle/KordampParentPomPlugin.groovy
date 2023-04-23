@@ -148,16 +148,26 @@ class KordampParentPomPlugin implements Plugin<Project> {
         }
 
         project.allprojects { Project p ->
-            def scompat = project.findProperty('sourceCompatibility')
-            def tcompat = project.findProperty('targetCompatibility')
+            def pscompat = p.findProperty('sourceCompatibility')
+            def ptcompat = p.findProperty('targetCompatibility')
+            def tscompat = p.findProperty('testSourceCompatibility')
+            def ttcompat = p.findProperty('testTargetCompatibility')
 
             p.tasks.withType(JavaCompile) { JavaCompile c ->
-                if (scompat) c.sourceCompatibility = scompat
-                if (tcompat) c.targetCompatibility = tcompat
+                if (pscompat) c.sourceCompatibility = pscompat
+                if (ptcompat) c.targetCompatibility = ptcompat
+                if (c.name.toLowerCase().contains('test')) {
+                    if (tscompat) c.sourceCompatibility = tscompat
+                    if (ttcompat) c.targetCompatibility = ttcompat
+                }
             }
             p.tasks.withType(GroovyCompile) { GroovyCompile c ->
-                if (scompat) c.sourceCompatibility = scompat
-                if (tcompat) c.targetCompatibility = tcompat
+                if (pscompat) c.sourceCompatibility = pscompat
+                if (ptcompat) c.targetCompatibility = ptcompat
+                if (c.name.toLowerCase().contains('test')) {
+                    if (tscompat) c.sourceCompatibility = tscompat
+                    if (ttcompat) c.targetCompatibility = ttcompat
+                }
             }
 
             if (reproducibleBuild) {
