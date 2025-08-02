@@ -28,7 +28,6 @@ import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.kordamp.gradle.plugin.enforcer.BuildEnforcerPlugin
 import org.kordamp.gradle.plugin.enforcer.api.BuildEnforcerExtension
-import org.kordamp.gradle.plugin.inline.InlinePlugin
 import org.kordamp.gradle.plugin.insight.InsightPlugin
 import org.kordamp.gradle.plugin.settings.ProjectsExtension
 import org.kordamp.gradle.plugin.settings.SettingsPlugin
@@ -39,7 +38,6 @@ import org.kordamp.gradle.plugin.settings.SettingsPlugin
 class KordampParentBuildPlugin implements Plugin<Settings> {
     void apply(Settings settings) {
         settings.plugins.apply(SettingsPlugin)
-        settings.plugins.apply(InlinePlugin)
         settings.plugins.apply(InsightPlugin)
         settings.plugins.apply(BuildEnforcerPlugin)
 
