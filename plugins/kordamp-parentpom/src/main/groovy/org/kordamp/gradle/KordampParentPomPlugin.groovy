@@ -174,8 +174,8 @@ class KordampParentPomPlugin implements Plugin<Project> {
                 p.tasks.withType(AbstractArchiveTask) { AbstractArchiveTask archive ->
                     archive.preserveFileTimestamps = false
                     archive.reproducibleFileOrder  = true
-                    archive.dirMode  = 0755
-                    archive.fileMode = 0644
+                    archive.filePermissions { perm -> perm.unix(0755) }
+                    archive.dirPermissions { perm -> perm.unix(0644) }
                 }
             }
         }
